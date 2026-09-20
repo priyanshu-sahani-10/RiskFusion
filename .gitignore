@@ -33,3 +33,7 @@ dist/
 
 # Logs
 *.log
+
+
+#CSV Files
+data/raw/
