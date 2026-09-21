@@ -51,13 +51,56 @@ def predict_transaction(transaction: dict):
     else:
         risk_level = "Low"
 
+    # SHAP explanation for XGBoost
+    shap_values = shap_explainer.shap_values(data)[0]
+
+    explanation = pd.DataFrame({
+        "feature": data.columns,
+        "shap_value": shap_values,
+    })
+
+    # Top features pushing toward fraud
+    fraud_factors = (
+        explanation[explanation["shap_value"] > 0]
+        .sort_values("shap_value", ascending=False)
+        .head(5)
+    )
+
+    # Top features pushing toward legitimate
+    legitimate_factors = (
+        explanation[explanation["shap_value"] < 0]
+        .sort_values("shap_value", ascending=True)
+        .head(5)
+    )
+
     return {
         "fraud_probability": float(fraud_probability),
         "prediction": prediction,
         "risk_level": risk_level,
+
         "model_probabilities": {
             "logistic_regression": float(prob_lr),
             "random_forest": float(prob_rf),
             "xgboost": float(prob_xgb),
+        },
+
+        "explanation": {
+            "model": "XGBoost",
+
+            "fraud_factors": [
+                {
+                    "feature": row["feature"],
+                    "impact": float(row["shap_value"]),
+                }
+                for _, row in fraud_factors.iterrows()
+            ],
+
+            "legitimate_factors": [
+                {
+                    "feature": row["feature"],
+                    "impact": float(row["shap_value"]),
+                }
+                for _, row in legitimate_factors.iterrows()
+            ],
         },
     }
