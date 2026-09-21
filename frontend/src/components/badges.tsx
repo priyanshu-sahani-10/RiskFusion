@@ -3,13 +3,13 @@ interface BadgeProps {
 }
 
 const RISK_STYLES: Record<string, string> = {
-  High: 'bg-red-500/15 text-red-400 ring-red-500/30',
-  Medium: 'bg-amber-500/15 text-amber-400 ring-amber-500/30',
-  Low: 'bg-emerald-500/15 text-emerald-400 ring-emerald-500/30',
+  High: 'bg-red-100 text-red-700 ring-red-200',
+  Medium: 'bg-amber-100 text-amber-800 ring-amber-200',
+  Low: 'bg-emerald-100 text-emerald-700 ring-emerald-200',
 };
 
 export function RiskBadge({ value }: BadgeProps) {
-  const style = RISK_STYLES[value] ?? 'bg-slate-500/15 text-slate-300 ring-slate-500/30';
+  const style = RISK_STYLES[value] ?? 'bg-slate-100 text-slate-600 ring-slate-200';
   return (
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${style}`}
@@ -25,8 +25,8 @@ export function PredictionBadge({ value }: { value: number }) {
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${
         fraud
-          ? 'bg-red-500/15 text-red-400 ring-red-500/30'
-          : 'bg-emerald-500/15 text-emerald-400 ring-emerald-500/30'
+          ? 'bg-red-100 text-red-700 ring-red-200'
+          : 'bg-emerald-100 text-emerald-700 ring-emerald-200'
       }`}
     >
       {fraud ? 'Fraud' : 'Legitimate'}

@@ -51,16 +51,16 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <header className="border-b border-slate-800">
+    <div className="min-h-screen bg-slate-100 text-slate-900">
+      <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <div>
             <h1 className="text-xl font-bold">RiskFusion</h1>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Explainable multi-model fraud detection &amp; risk scoring
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-xs text-slate-500">
             <span
               className={`inline-block h-2 w-2 rounded-full ${
                 apiOnline === null
@@ -77,13 +77,13 @@ export default function App() {
 
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
         {error && (
-          <div className="rounded-xl border border-red-900 bg-red-950/50 px-4 py-3 text-sm text-red-300">
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
             Overview
           </h2>
           <Overview predictions={predictions} loading={historyLoading} />
@@ -94,15 +94,15 @@ export default function App() {
           {result ? (
             <ResultCard result={result} />
           ) : (
-            <div className="flex items-center justify-center rounded-xl border border-dashed border-slate-800 bg-slate-900/50 p-5 text-sm text-slate-500">
-              Submit a transaction to see the fraud probability, model comparison,
+            <div className="flex items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-5 text-sm text-slate-500">
+              Analyze a transaction to see the fraud probability, model comparison,
               and SHAP explanation here.
             </div>
           )}
         </section>
 
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
             Prediction history
           </h2>
           <div className="space-y-4">
@@ -118,7 +118,7 @@ export default function App() {
           </div>
         </section>
 
-        <footer className="pb-4 text-center text-xs text-slate-600">
+        <footer className="pb-4 text-center text-xs text-slate-400">
           RiskFusion · ensemble LR / RF / XGBoost · threshold 0.731588 · SHAP explains
           the XGBoost component
         </footer>

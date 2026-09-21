@@ -15,9 +15,9 @@ function StatCard({
   accent: string;
 }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className={`text-3xl font-bold ${accent}`}>{value}</div>
-      <div className="mt-1 text-sm text-slate-400">{label}</div>
+      <div className="mt-1 text-sm text-slate-500">{label}</div>
     </div>
   );
 }
@@ -34,7 +34,7 @@ export default function Overview({ predictions, loading }: Props) {
         {[0, 1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-24 animate-pulse rounded-xl border border-slate-800 bg-slate-900"
+            className="h-24 animate-pulse rounded-xl border border-slate-200 bg-white"
           />
         ))}
       </div>
@@ -43,10 +43,10 @@ export default function Overview({ predictions, loading }: Props) {
 
   return (
     <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-      <StatCard label="Total predictions" value={total} accent="text-slate-100" />
-      <StatCard label="Fraud detected" value={fraud} accent="text-red-400" />
-      <StatCard label="Legitimate transactions" value={legitimate} accent="text-emerald-400" />
-      <StatCard label="High-risk predictions" value={highRisk} accent="text-amber-400" />
+      <StatCard label="Total predictions" value={total} accent="text-slate-900" />
+      <StatCard label="Fraud detected" value={fraud} accent="text-red-600" />
+      <StatCard label="Legitimate transactions" value={legitimate} accent="text-emerald-600" />
+      <StatCard label="High-risk predictions" value={highRisk} accent="text-amber-600" />
     </div>
   );
 }
