@@ -1,4 +1,7 @@
-from pydantic import BaseModel
+from datetime import datetime
+from typing import List
+
+from pydantic import BaseModel, ConfigDict
 
 
 class TransactionInput(BaseModel):
@@ -32,3 +35,39 @@ class TransactionInput(BaseModel):
     V27: float
     V28: float
     Amount: float
+
+
+class FeatureFactor(BaseModel):
+    feature: str
+    impact: float
+
+
+class ExplanationResponse(BaseModel):
+    model: str
+    fraud_factors: List[FeatureFactor] = []
+    legitimate_factors: List[FeatureFactor] = []
+
+
+class ModelProbabilities(BaseModel):
+    logistic_regression: float
+    random_forest: float
+    xgboost: float
+
+
+class PredictResponse(BaseModel):
+    fraud_probability: float
+    prediction: int
+    risk_level: str
+    model_probabilities: ModelProbabilities
+    explanation: ExplanationResponse
+
+
+class PredictionDetailResponse(PredictResponse):
+    id: int
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ErrorResponse(BaseModel):
+    detail: str
