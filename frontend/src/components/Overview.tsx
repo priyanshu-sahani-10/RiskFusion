@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { PredictionDetail } from '../lib/api';
 
 interface Props {
@@ -14,7 +15,7 @@ function StatCard({
 }: {
   label: string;
   caption: string;
-  value: number;
+  value: ReactNode;
   accent: string;
   dot: string;
 }) {
@@ -35,8 +36,8 @@ function StatCard({
 export default function Overview({ predictions, loading }: Props) {
   const total = predictions.length;
   const fraud = predictions.filter((p) => p.prediction === 1).length;
-  const legitimate = total - fraud;
   const highRisk = predictions.filter((p) => p.risk_level === 'High').length;
+  const fraudRate = total > 0 ? `${((fraud / total) * 100).toFixed(1)}%` : '—';
 
   if (loading) {
     return (
@@ -54,32 +55,32 @@ export default function Overview({ predictions, loading }: Props) {
   return (
     <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
       <StatCard
-        label="Total Predictions"
-        caption="Scored through the API"
+        label="Total analyzed"
+        caption="Transactions scored via API"
         value={total}
         accent="text-slate-100"
         dot="bg-cyan-400"
       />
       <StatCard
-        label="Fraud Detected"
+        label="Fraud detected"
         caption="Predicted as fraud"
         value={fraud}
         accent="text-red-300"
         dot="bg-red-400"
       />
       <StatCard
-        label="Legitimate"
-        caption="Predicted as legitimate"
-        value={legitimate}
-        accent="text-emerald-300"
-        dot="bg-emerald-400"
-      />
-      <StatCard
-        label="High Risk"
-        caption="High risk level"
-        value={highRisk}
+        label="Fraud rate"
+        caption="Share of analyzed volume"
+        value={fraudRate}
         accent="text-amber-300"
         dot="bg-amber-400"
+      />
+      <StatCard
+        label="High risk"
+        caption="High risk level"
+        value={highRisk}
+        accent="text-orange-300"
+        dot="bg-orange-400"
       />
     </div>
   );

@@ -36,6 +36,12 @@ export interface PredictionDetail extends PredictResponse {
 
 export type TransactionInput = Record<string, number>;
 
+/**
+ * Validation-selected decision threshold from the backend
+ * (models/threshold.pkl). Mirrored here for display of the risk breakdown.
+ */
+export const DECISION_THRESHOLD = 0.731588;
+
 const API_BASE: string =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
   'http://localhost:8000';

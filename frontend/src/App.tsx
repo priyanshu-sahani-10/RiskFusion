@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { DetailCard, HistoryTable } from './components/History';
+import ModelAnalysis from './components/ModelAnalysis';
 import Overview from './components/Overview';
-import PredictForm from './components/PredictForm';
-import ResultCard from './components/ResultCard';
+import RiskAssessment, { AnalyzingPanel } from './components/RiskAssessment';
+import TransactionExplorer from './components/TransactionExplorer';
 import ExplanationPanel from './components/ExplanationPanel';
 import { checkHealth, getPrediction, listPredictions } from './lib/api';
 import type { PredictResponse, PredictionDetail } from './lib/api';
+import { SAMPLE_TRANSACTIONS } from './lib/samples';
+import type { SampleTransaction } from './lib/samples';
 
 function SectionHeading({ children }: { children: string }) {
   return (
@@ -20,6 +23,11 @@ export default function App() {
   const [predictions, setPredictions] = useState<PredictionDetail[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [result, setResult] = useState<PredictResponse | null>(null);
+  const [analyzedSample, setAnalyzedSample] = useState<SampleTransaction | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [explorerSample, setExplorerSample] = useState<SampleTransaction | null>(
+    SAMPLE_TRANSACTIONS[0] ?? null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [detail, setDetail] = useState<PredictionDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -42,8 +50,9 @@ export default function App() {
     void checkHealth().then(setApiOnline);
   }, [refreshHistory]);
 
-  function handleResult(r: PredictResponse) {
+  function handleResult(r: PredictResponse, sample: SampleTransaction) {
     setResult(r);
+    setAnalyzedSample(sample);
     setError(null);
     void refreshHistory();
   }
@@ -58,6 +67,10 @@ export default function App() {
     } finally {
       setDetailLoading(false);
     }
+  }
+
+  function scrollToExplorer() {
+    document.getElementById('explorer')?.scrollIntoView({ behavior: 'smooth' });
   }
 
   return (
@@ -135,21 +148,29 @@ export default function App() {
         )}
 
         <section>
-          <SectionHeading>Overview</SectionHeading>
+          <SectionHeading>Overview metrics</SectionHeading>
           <Overview predictions={predictions} loading={historyLoading} />
         </section>
 
         <section className="grid items-start gap-6 lg:grid-cols-2">
-          <div>
-            <SectionHeading>Transaction</SectionHeading>
-            <PredictForm onResult={handleResult} onError={setError} />
+          <div id="explorer">
+            <SectionHeading>Transaction explorer</SectionHeading>
+            <TransactionExplorer
+              selected={explorerSample}
+              onSelect={setExplorerSample}
+              onResult={handleResult}
+              onError={setError}
+              onAnalyzingChange={setAnalyzing}
+            />
           </div>
           <div>
             <SectionHeading>Risk assessment</SectionHeading>
-            {result ? (
-              <ResultCard result={result} />
+            {analyzing ? (
+              <AnalyzingPanel />
+            ) : result ? (
+              <RiskAssessment result={result} sample={analyzedSample} />
             ) : (
-              <div className="flex min-h-[280px] flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-6 text-center">
+              <div className="flex min-h-[320px] flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-6 text-center">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -164,17 +185,30 @@ export default function App() {
                     d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
                   />
                 </svg>
-                <p className="mt-3 text-sm font-medium text-slate-300">
-                  No analysis yet
+                <p className="mt-3 text-sm font-semibold text-slate-200">
+                  No transaction analyzed
                 </p>
                 <p className="mt-1 max-w-xs text-xs leading-relaxed text-slate-500">
-                  Select a transaction and click Analyze Transaction to see the
-                  fraud probability, model comparison, and SHAP explanation here.
+                  Select a transaction from the explorer to begin analysis.
                 </p>
+                <button
+                  type="button"
+                  onClick={scrollToExplorer}
+                  className="mt-4 rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-xs font-semibold text-cyan-200 transition hover:bg-cyan-400/20"
+                >
+                  Browse transactions
+                </button>
               </div>
             )}
           </div>
         </section>
+
+        {result && (
+          <section>
+            <SectionHeading>Model analysis</SectionHeading>
+            <ModelAnalysis result={result} />
+          </section>
+        )}
 
         {result && (
           <section>

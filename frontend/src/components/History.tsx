@@ -1,5 +1,7 @@
+import { useMemo, useState } from 'react';
 import type { PredictionDetail } from '../lib/api';
 import { PredictionBadge, RiskBadge } from './badges';
+import ExplanationPanel from './ExplanationPanel';
 
 interface TableProps {
   items: PredictionDetail[];
@@ -7,6 +9,18 @@ interface TableProps {
   selectedId: number | null;
   onSelect: (id: number) => void;
 }
+
+type SortKey = 'id' | 'risk_level' | 'fraud_probability' | 'prediction' | 'created_at';
+
+const RISK_ORDER: Record<string, number> = { Low: 0, Medium: 1, High: 2 };
+
+const COLUMNS: { key: SortKey; label: string }[] = [
+  { key: 'id', label: 'ID' },
+  { key: 'risk_level', label: 'Risk' },
+  { key: 'fraud_probability', label: 'Probability' },
+  { key: 'prediction', label: 'Prediction' },
+  { key: 'created_at', label: 'Created' },
+];
 
 function formatTime(iso: string): string {
   const d = new Date(iso);
@@ -27,6 +41,43 @@ function TableSkeleton() {
 }
 
 export function HistoryTable({ items, loading, selectedId, onSelect }: TableProps) {
+  const [sortKey, setSortKey] = useState<SortKey>('id');
+  const [sortDir, setSortDir] = useState<1 | -1>(-1);
+
+  const sorted = useMemo(() => {
+    const arr = [...items];
+    arr.sort((a, b) => {
+      let cmp: number;
+      switch (sortKey) {
+        case 'risk_level':
+          cmp = (RISK_ORDER[a.risk_level] ?? -1) - (RISK_ORDER[b.risk_level] ?? -1);
+          break;
+        case 'fraud_probability':
+          cmp = a.fraud_probability - b.fraud_probability;
+          break;
+        case 'prediction':
+          cmp = a.prediction - b.prediction;
+          break;
+        case 'created_at':
+          cmp = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+          break;
+        default:
+          cmp = a.id - b.id;
+      }
+      return cmp * sortDir;
+    });
+    return arr;
+  }, [items, sortKey, sortDir]);
+
+  function toggleSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDir((d) => (d === 1 ? -1 : 1));
+    } else {
+      setSortKey(key);
+      setSortDir(-1);
+    }
+  }
+
   if (loading) return <TableSkeleton />;
   if (items.length === 0) {
     return (
@@ -54,18 +105,28 @@ export function HistoryTable({ items, loading, selectedId, onSelect }: TableProp
   }
   return (
     <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.04] shadow-xl backdrop-blur">
-      <table className="w-full min-w-[640px] text-left text-sm">
+      <table className="w-full min-w-[600px] text-left text-sm">
         <thead>
           <tr className="border-b border-white/10 text-[11px] uppercase tracking-wider text-slate-500">
-            <th className="px-4 py-3 font-semibold">ID</th>
-            <th className="px-4 py-3 font-semibold">Risk</th>
-            <th className="px-4 py-3 font-semibold">Fraud prob.</th>
-            <th className="px-4 py-3 font-semibold">Prediction</th>
-            <th className="px-4 py-3 font-semibold">Created</th>
+            {COLUMNS.map((col) => (
+              <th key={col.key} className="px-4 py-3 font-semibold">
+                <button
+                  type="button"
+                  onClick={() => toggleSort(col.key)}
+                  className="inline-flex items-center gap-1 uppercase transition hover:text-cyan-300"
+                  aria-label={`Sort by ${col.label}`}
+                >
+                  {col.label}
+                  <span className={sortKey === col.key ? 'text-cyan-300' : 'text-slate-600'}>
+                    {sortKey === col.key && sortDir === 1 ? '▲' : '▼'}
+                  </span>
+                </button>
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {items.map((p) => (
+          {sorted.map((p) => (
             <tr
               key={p.id}
               onClick={() => onSelect(p.id)}
@@ -108,46 +169,44 @@ export function DetailCard({
   }
   if (!detail) return null;
   return (
-    <div className="animate-fade-up rounded-2xl border border-cyan-400/20 bg-white/[0.04] p-5 shadow-xl backdrop-blur">
-      <h3 className="mb-3 text-sm font-semibold text-slate-200">
-        Prediction #{detail.id}{' '}
-        <span className="font-normal text-slate-500">
-          — full record from GET /predictions/{detail.id}
-        </span>
-      </h3>
-      <div className="mb-3 flex flex-wrap items-center gap-2">
-        <RiskBadge value={detail.risk_level} />
-        <PredictionBadge value={detail.prediction} />
-        <span className="font-mono text-sm tabular-nums text-slate-100">
-          {(detail.fraud_probability * 100).toFixed(2)}%
-        </span>
-        <span className="text-xs text-slate-500">{formatTime(detail.created_at)}</span>
+    <div className="animate-fade-up space-y-4">
+      <div className="rounded-2xl border border-cyan-400/20 bg-white/[0.04] p-5 shadow-xl backdrop-blur">
+        <h3 className="mb-1 text-sm font-semibold text-slate-200">
+          Prediction #{detail.id}
+        </h3>
+        <p className="mb-3 text-xs text-slate-500">
+          Full record from GET /predictions/{detail.id} · {formatTime(detail.created_at)}
+        </p>
+        <div className="flex flex-wrap items-center gap-3">
+          <RiskBadge value={detail.risk_level} />
+          <PredictionBadge value={detail.prediction} />
+          <span className="font-mono text-2xl font-bold tabular-nums text-slate-100">
+            {(detail.fraud_probability * 100).toFixed(2)}%
+          </span>
+          <span className="text-xs text-slate-500">fraud probability</span>
+        </div>
+        <div className="mt-4 grid gap-2 text-sm sm:grid-cols-3">
+          <div className="rounded-lg border border-white/5 bg-slate-950/50 p-2.5">
+            <div className="text-xs text-slate-500">Logistic Regression</div>
+            <div className="font-mono tabular-nums text-slate-100">
+              {detail.model_probabilities.logistic_regression.toFixed(4)}
+            </div>
+          </div>
+          <div className="rounded-lg border border-white/5 bg-slate-950/50 p-2.5">
+            <div className="text-xs text-slate-500">Random Forest</div>
+            <div className="font-mono tabular-nums text-slate-100">
+              {detail.model_probabilities.random_forest.toFixed(4)}
+            </div>
+          </div>
+          <div className="rounded-lg border border-white/5 bg-slate-950/50 p-2.5">
+            <div className="text-xs text-slate-500">XGBoost</div>
+            <div className="font-mono tabular-nums text-slate-100">
+              {detail.model_probabilities.xgboost.toFixed(4)}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="grid gap-2 text-sm sm:grid-cols-3">
-        <div className="rounded-lg border border-white/5 bg-slate-950/50 p-2.5">
-          <div className="text-xs text-slate-500">Logistic Regression</div>
-          <div className="font-mono tabular-nums text-slate-100">
-            {detail.model_probabilities.logistic_regression.toFixed(4)}
-          </div>
-        </div>
-        <div className="rounded-lg border border-white/5 bg-slate-950/50 p-2.5">
-          <div className="text-xs text-slate-500">Random Forest</div>
-          <div className="font-mono tabular-nums text-slate-100">
-            {detail.model_probabilities.random_forest.toFixed(4)}
-          </div>
-        </div>
-        <div className="rounded-lg border border-white/5 bg-slate-950/50 p-2.5">
-          <div className="text-xs text-slate-500">XGBoost</div>
-          <div className="font-mono tabular-nums text-slate-100">
-            {detail.model_probabilities.xgboost.toFixed(4)}
-          </div>
-        </div>
-      </div>
-      <p className="mt-3 text-xs text-slate-500">
-        SHAP explanation model: {detail.explanation.model} —{' '}
-        {detail.explanation.fraud_factors.length} fraud /{' '}
-        {detail.explanation.legitimate_factors.length} legitimate factors stored.
-      </p>
+      <ExplanationPanel result={detail} />
     </div>
   );
 }
