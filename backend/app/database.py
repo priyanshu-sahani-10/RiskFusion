@@ -1,10 +1,16 @@
-from pathlib import Path
+import os
 
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 
-DATABASE_URL = "postgresql+psycopg://postgres:Priyanshu1234@localhost:5432/riskfusion"
+load_dotenv()
+
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql+psycopg://postgres:postgres@localhost:5432/riskfusion",
+)
 
 
 engine = create_engine(DATABASE_URL)
