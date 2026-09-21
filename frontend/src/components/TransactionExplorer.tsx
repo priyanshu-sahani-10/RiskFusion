@@ -75,30 +75,30 @@ export default function TransactionExplorer({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-xl backdrop-blur transition duration-200 hover:border-white/20 sm:p-6"
+      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 transition duration-200 hover:border-slate-300 sm:p-6"
     >
       <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold text-slate-100">
+        <h2 className="text-lg font-semibold text-slate-900">
           Transaction Explorer
         </h2>
         <div className="flex gap-2 text-xs">
           <button
             type="button"
             onClick={() => pickSample(DEFAULT_LEGIT_ID)}
-            className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 font-medium text-slate-300 transition hover:border-emerald-400/40 hover:text-emerald-300"
+            className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 font-medium text-slate-600 transition hover:border-emerald-300 hover:text-emerald-700"
           >
             Legit sample
           </button>
           <button
             type="button"
             onClick={() => pickSample(DEFAULT_FRAUD_ID)}
-            className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 font-medium text-slate-300 transition hover:border-red-400/40 hover:text-red-300"
+            className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 font-medium text-slate-600 transition hover:border-red-300 hover:text-red-700"
           >
             Fraud sample
           </button>
         </div>
       </div>
-      <p className="mb-4 text-xs leading-relaxed text-slate-400">
+      <p className="mb-4 text-xs leading-relaxed text-slate-500">
         Real transactions from the credit-card dataset. V1–V28 are anonymized
         PCA features and are sent to the API automatically.
       </p>
@@ -110,7 +110,7 @@ export default function TransactionExplorer({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search transaction ID, amount..."
-          className="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-cyan-400/60 focus:outline-none"
+          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none"
         />
       </label>
 
@@ -124,19 +124,19 @@ export default function TransactionExplorer({
             onClick={() => setFilter(f.key)}
             className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
               filter === f.key
-                ? 'bg-cyan-400/15 text-cyan-300 ring-1 ring-inset ring-cyan-400/40'
-                : 'border border-white/10 bg-white/5 text-slate-400 hover:text-slate-200'
+                ? 'bg-sky-100 text-sky-700 ring-1 ring-inset ring-sky-300'
+                : 'border border-slate-300 bg-white text-slate-500 hover:text-slate-800'
             }`}
           >
             {f.label}
           </button>
         ))}
-        <span className="ml-auto self-center text-[11px] text-slate-500">
+        <span className="ml-auto self-center text-[11px] text-slate-400">
           {options.length} shown
         </span>
       </div>
 
-      <div className="slim-scroll max-h-64 overflow-y-auto rounded-xl border border-white/10">
+      <div className="slim-scroll max-h-64 overflow-y-auto rounded-xl border border-slate-200">
         {options.length === 0 && (
           <p className="px-3 py-6 text-center text-sm text-slate-500">
             No transactions match this search.
@@ -150,23 +150,23 @@ export default function TransactionExplorer({
               type="button"
               onClick={() => onSelect(s)}
               aria-pressed={active}
-              className={`flex w-full items-center gap-3 border-b border-white/5 px-3 py-2.5 text-left transition last:border-0 hover:bg-white/5 ${
-                active ? 'bg-cyan-400/10 hover:bg-cyan-400/10' : ''
+              className={`flex w-full items-center gap-3 border-b border-slate-100 px-3 py-2.5 text-left transition last:border-0 hover:bg-slate-50 ${
+                active ? 'bg-sky-50 hover:bg-sky-50' : ''
               }`}
             >
               <span
-                className={`h-8 w-1 shrink-0 rounded-full ${active ? 'bg-cyan-400' : 'bg-white/10'}`}
+                className={`h-8 w-1 shrink-0 rounded-full ${active ? 'bg-sky-500' : 'bg-slate-200'}`}
                 aria-hidden="true"
               />
               <span className="min-w-0 flex-1">
-                <span className="block font-mono text-sm font-bold text-slate-100">
+                <span className="block font-mono text-sm font-bold text-slate-900">
                   #{s.id}
                 </span>
                 <span className="block text-[11px] text-slate-500">
                   Time: <span className="font-mono">{s.transaction.Time}</span>
                 </span>
               </span>
-              <span className="font-mono text-sm tabular-nums text-slate-200">
+              <span className="font-mono text-sm tabular-nums text-slate-700">
                 ${s.transaction.Amount.toFixed(2)}
               </span>
               <PredictionBadge value={s.actual} />
@@ -178,9 +178,9 @@ export default function TransactionExplorer({
       {selected && (
         <div
           key={selected.id}
-          className="animate-fade-up mt-4 rounded-xl border border-cyan-400/20 bg-gradient-to-br from-cyan-400/10 to-blue-500/5 p-4"
+          className="animate-fade-up mt-4 rounded-xl border border-sky-200 bg-gradient-to-br from-sky-50 to-blue-50/60 p-4"
         >
-          <div className="font-mono text-lg font-bold text-slate-100">
+          <div className="font-mono text-lg font-bold text-slate-900">
             Transaction #{selected.id}
           </div>
           <dl className="mt-3 grid grid-cols-3 gap-3 text-sm">
@@ -188,7 +188,7 @@ export default function TransactionExplorer({
               <dt className="text-[11px] uppercase tracking-wider text-slate-500">
                 Amount
               </dt>
-              <dd className="font-mono font-semibold text-slate-100">
+              <dd className="font-mono font-semibold text-slate-900">
                 ${selected.transaction.Amount.toFixed(2)}
               </dd>
             </div>
@@ -196,7 +196,7 @@ export default function TransactionExplorer({
               <dt className="text-[11px] uppercase tracking-wider text-slate-500">
                 Time
               </dt>
-              <dd className="font-mono font-semibold text-slate-100">
+              <dd className="font-mono font-semibold text-slate-900">
                 {selected.transaction.Time}
               </dd>
             </div>
@@ -214,10 +214,10 @@ export default function TransactionExplorer({
 
       {selected && (
         <details className="mt-3 text-xs text-slate-500">
-          <summary className="cursor-pointer transition hover:text-slate-300">
+          <summary className="cursor-pointer transition hover:text-slate-700">
             View raw model features
           </summary>
-          <pre className="slim-scroll mt-1 max-h-40 overflow-auto rounded-lg border border-white/10 bg-slate-950/60 p-2 font-mono text-[11px] leading-relaxed text-slate-400">
+          <pre className="slim-scroll mt-1 max-h-40 overflow-auto rounded-lg border border-slate-200 bg-slate-100 p-2 font-mono text-[11px] leading-relaxed text-slate-600">
             {JSON.stringify(selected.transaction, null, 1)}
           </pre>
         </details>
@@ -226,7 +226,7 @@ export default function TransactionExplorer({
       <button
         type="submit"
         disabled={submitting || !selected}
-        className="mt-4 w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:brightness-100"
+        className="mt-4 w-full rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-500/25 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:brightness-100"
       >
         {submitting ? 'Analyzing…' : 'Analyze Transaction'}
       </button>

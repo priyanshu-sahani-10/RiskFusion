@@ -20,10 +20,10 @@ function StatCard({
   dot: string;
 }) {
   return (
-    <div className="group rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-xl backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:border-white/20">
+    <div className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 transition duration-200 hover:-translate-y-0.5 hover:border-slate-300">
       <div className="flex items-center gap-2">
         <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
-        <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">
           {label}
         </div>
       </div>
@@ -45,7 +45,7 @@ export default function Overview({ predictions, loading }: Props) {
         {[0, 1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-28 animate-pulse rounded-2xl border border-white/10 bg-white/[0.04]"
+            className="h-28 animate-pulse rounded-2xl border border-slate-200 bg-white"
           />
         ))}
       </div>
@@ -58,29 +58,29 @@ export default function Overview({ predictions, loading }: Props) {
         label="Total analyzed"
         caption="Transactions scored via API"
         value={total}
-        accent="text-slate-100"
-        dot="bg-cyan-400"
+        accent="text-slate-900"
+        dot="bg-sky-500"
       />
       <StatCard
         label="Fraud detected"
         caption="Predicted as fraud"
         value={fraud}
-        accent="text-red-300"
-        dot="bg-red-400"
+        accent="text-red-600"
+        dot="bg-red-500"
       />
       <StatCard
         label="Fraud rate"
         caption="Share of analyzed volume"
         value={fraudRate}
-        accent="text-amber-300"
-        dot="bg-amber-400"
+        accent="text-amber-600"
+        dot="bg-amber-500"
       />
       <StatCard
         label="High risk"
         caption="High risk level"
         value={highRisk}
-        accent="text-orange-300"
-        dot="bg-orange-400"
+        accent="text-orange-600"
+        dot="bg-orange-500"
       />
     </div>
   );

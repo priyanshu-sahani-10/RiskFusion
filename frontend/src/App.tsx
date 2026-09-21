@@ -12,8 +12,8 @@ import type { SampleTransaction } from './lib/samples';
 
 function SectionHeading({ children }: { children: string }) {
   return (
-    <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-slate-400">
-      <span className="inline-block h-px w-4 bg-cyan-400/60" />
+    <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-slate-500">
+      <span className="inline-block h-px w-4 bg-sky-500" />
       {children}
     </h2>
   );
@@ -74,17 +74,17 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#060b1d] text-slate-200">
-      {/* Ambient background glows */}
+    <div className="relative min-h-screen bg-slate-100 text-slate-800">
+      {/* Ambient background accents */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-32 left-1/4 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
-        <div className="absolute top-40 -right-24 h-72 w-72 rounded-full bg-blue-600/10 blur-3xl" />
+        <div className="absolute -top-32 left-1/4 h-72 w-72 rounded-full bg-sky-200/50 blur-3xl" />
+        <div className="absolute top-40 -right-24 h-72 w-72 rounded-full bg-blue-200/50 blur-3xl" />
       </div>
 
-      <header className="relative border-b border-white/10 bg-white/[0.03] backdrop-blur">
+      <header className="relative border-b border-slate-200 bg-white/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-500/25">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 shadow-lg shadow-sky-500/25">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -101,10 +101,10 @@ export default function App() {
               </svg>
             </span>
             <div>
-              <h1 className="text-xl font-bold tracking-tight text-white">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900">
                 RiskFusion
               </h1>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500">
                 Explainable Multi-Model Fraud Detection
               </p>
             </div>
@@ -112,17 +112,17 @@ export default function App() {
           <div
             className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium ${
               apiOnline === false
-                ? 'border-red-400/30 bg-red-500/10 text-red-300'
-                : 'border-white/10 bg-white/5 text-slate-300'
+                ? 'border-red-200 bg-red-50 text-red-700'
+                : 'border-slate-200 bg-white text-slate-600'
             }`}
           >
             <span
               className={`inline-block h-2 w-2 rounded-full ${
                 apiOnline === null
-                  ? 'bg-slate-500'
+                  ? 'bg-slate-400'
                   : apiOnline
-                    ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]'
-                    : 'bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.9)]'
+                    ? 'bg-emerald-500'
+                    : 'bg-red-500'
               }`}
             />
             {apiOnline === null
@@ -136,13 +136,13 @@ export default function App() {
 
       <main className="relative mx-auto max-w-6xl space-y-8 px-4 py-6">
         {apiOnline === false && (
-          <div className="animate-fade-up rounded-2xl border border-amber-400/25 bg-amber-400/[0.07] px-4 py-3 text-sm text-amber-200">
+          <div className="animate-fade-up rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
             The API appears to be offline. Start the FastAPI backend on port 8000
             to score transactions and load history.
           </div>
         )}
         {error && (
-          <div className="animate-fade-up rounded-2xl border border-red-400/25 bg-red-500/[0.08] px-4 py-3 text-sm text-red-200">
+          <div className="animate-fade-up rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {error}
           </div>
         )}
@@ -170,13 +170,13 @@ export default function App() {
             ) : result ? (
               <RiskAssessment result={result} sample={analyzedSample} />
             ) : (
-              <div className="flex min-h-[320px] flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-6 text-center">
+              <div className="flex min-h-[320px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center shadow-xl shadow-slate-200/60">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={1.5}
-                  className="h-10 w-10 text-slate-600"
+                  className="h-10 w-10 text-slate-300"
                   aria-hidden="true"
                 >
                   <path
@@ -185,7 +185,7 @@ export default function App() {
                     d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
                   />
                 </svg>
-                <p className="mt-3 text-sm font-semibold text-slate-200">
+                <p className="mt-3 text-sm font-semibold text-slate-800">
                   No transaction analyzed
                 </p>
                 <p className="mt-1 max-w-xs text-xs leading-relaxed text-slate-500">
@@ -194,7 +194,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={scrollToExplorer}
-                  className="mt-4 rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-xs font-semibold text-cyan-200 transition hover:bg-cyan-400/20"
+                  className="mt-4 rounded-lg border border-sky-300 bg-sky-50 px-4 py-2 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
                 >
                   Browse transactions
                 </button>
@@ -232,7 +232,7 @@ export default function App() {
           </div>
         </section>
 
-        <footer className="pb-4 text-center text-xs text-slate-600">
+        <footer className="pb-4 text-center text-xs text-slate-400">
           RiskFusion · weighted ensemble LR / RF / XGBoost · threshold 0.731588 ·
           SHAP explains the XGBoost component
         </footer>
